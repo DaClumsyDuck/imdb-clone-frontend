@@ -29,7 +29,7 @@ export const RatingProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const fetchRatingsForMovies = async (movieIds: string[]) => {
-    const apiKey = "YOUR_TMDB_API_KEY"; // Replace with your TMDB API key
+    const apiKey = "621fe1fbfc8a8166a4336d9410f36ac6";
     const newRatings: { [movieId: string]: number } = {};
 
     await Promise.all(
