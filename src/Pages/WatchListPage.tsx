@@ -3,6 +3,11 @@ import { useWatchlist } from '../context/WatchListContext.tsx';
 import { useAuth } from '../context/AuthContext.tsx';
 import { Link } from 'react-router-dom';
 
+
+interface WatchlistPageProps {
+  movies: any[]; 
+}
+
 const WatchlistPage = () => {
   const { watchlist, removeMovie, fetchWatchlist, loading } = useWatchlist();
   const { user } = useAuth();

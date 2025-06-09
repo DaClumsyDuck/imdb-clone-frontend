@@ -9,6 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext.tsx";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { useWatchlist } from "../context/WatchListContext.tsx";
+
 
 
 interface ExtendedUser {
@@ -30,6 +32,7 @@ const ProfilePage = () => {
   const [watchlistMovies, setWatchlistMovies] = useState<any[]>([]);
   const TMDB_API_KEY = "621fe1fbfc8a8166a4336d9410f36ac6";
   const [ratedMoviesData, setRatedMoviesData] = useState<any[]>([]);
+  const { watchlist } = useWatchlist();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -183,23 +186,31 @@ const ProfilePage = () => {
           </button>
         </div>
 
-        <div className="mt-10 bg-gray-50 dark:bg-gray-700 p-4 rounded-xl">
-          <h2 className="text-2xl font-bold text-yellow-500 mb-4">🎬 Watchlist</h2>
-          {watchlistMovies.length > 0 ? (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4 text-yellow-500">Your Watchlist</h2>
+          {watchlist.length === 0 ? (
+            <p className="text-gray-600 dark:text-gray-300">Your watchlist is empty.</p>
+          ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {watchlistMovies.map((movie) => (
-                <div key={movie.id} className="text-center">
+              {watchlist.map((movie) => (
+                <div
+                  key={movie.id}
+                  className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+                >
                   <img
-                    src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     alt={movie.title}
-                    className="rounded-lg mx-auto"
+                    className="w-full h-64 object-cover rounded"
                   />
-                  <p className="mt-2 text-sm">{movie.title}</p>
+                  <h3 className="text-md font-medium text-gray-800 dark:text-white mt-2">
+                    {movie.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {movie.release_date?.slice(0, 4)}
+                  </p>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="text-gray-300">Check Watchlist Page</p>
           )}
         </div>
 
@@ -223,6 +234,50 @@ const ProfilePage = () => {
           ) : (
             <p className="text-gray-300">No ratings yet.</p>
           )}
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4 text-yellow-500">User Reviews</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+            {[
+              {
+                username: "film_buff_91",
+                movie: "Inception",
+                review: "An absolute mind-bender with stunning visuals. Nolan at his best.",
+                rating: 5,
+              },
+              {
+                username: "cinema_critic",
+                movie: "The Godfather",
+                review: "Timeless classic. The performances are legendary.",
+                rating: 5,
+              },
+              {
+                username: "moviegeek88",
+                movie: "Interstellar",
+                review: "Beautifully emotional and scientifically intriguing.",
+                rating: 4,
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
+              >
+                <h3 className="text-md font-semibold text-gray-800 dark:text-white">
+                  {item.movie}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 italic">
+                  “{item.review}”
+                </p>
+                <div className="mt-2 flex justify-between items-center">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">— {item.username}</span>
+                  <span className="text-yellow-500">
+                    {"⭐".repeat(item.rating)}{item.rating < 5 ? "☆".repeat(5 - item.rating) : ""}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
 
