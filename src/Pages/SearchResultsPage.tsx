@@ -4,6 +4,8 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import MovieCard from "../components/MovieCard.tsx";
 import { useRatingContext } from '../context/RatingContext.tsx';
+import MovieListItem from "../components/MovieListItem.tsx";
+import { useViewMode } from "../context/ViewModeContext.tsx";
 
 type Movie = {
   genre_names: unknown;
@@ -12,6 +14,8 @@ type Movie = {
   poster_path?: string;
   release_date?: string;
   genre_ids?: number[];
+  overview: string;
+  vote_average: number;
 };
 
 type Actor = {
@@ -31,6 +35,8 @@ const SearchResultsPage: React.FC = () => {
   const [actor, setActor] = useState<Actor[]>([]);
   const [loading, setLoading] = useState(false);
   const { fetchRatingsForMovies } = useRatingContext();
+  const { viewMode } = useViewMode();
+
 
   const apiKey = "621fe1fbfc8a8166a4336d9410f36ac6";
 
@@ -118,17 +124,36 @@ const SearchResultsPage: React.FC = () => {
       {/* Movies Section */}
       {!loading && movies.length > 0 && (
         <>
-          <h2 className="text-2xl font-bold text-yellow-400 mt-6 mb-4">
-            Movies
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {movies.map((movie) => (
-              <Link
-                to={`/movie/${movie.id}`}
-                key={movie.id}
-                className="block transition-transform transform hover:scale-105 hover:shadow-lg"
-              >
-                <MovieCard
+          <div className="flex items-center justify-between mt-6 mb-4">
+            <h2 className="text-2xl font-bold text-yellow-400">Movies</h2>
+          </div>
+          {viewMode === "grid" ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {movies.map((movie) => (
+                <Link
+                  to={`/movie/${movie.id}`}
+                  key={movie.id}
+                  className="block transition-transform transform hover:scale-105 hover:shadow-lg"
+                >
+                  <MovieCard
+                    movieId={movie.id}
+                    title={movie.title}
+                    image={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                        : "/placeholder.jpg"
+                    }
+                    year={movie.release_date ? movie.release_date.split("-")[0] : "N/A"}
+                    genre={Array.isArray(movie.genre_names) ? movie.genre_names : []}
+                  />
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {movies.map((movie) => (
+                <MovieListItem
+                  key={movie.id}
                   movieId={movie.id}
                   title={movie.title}
                   image={
@@ -136,12 +161,13 @@ const SearchResultsPage: React.FC = () => {
                       ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
                       : "/placeholder.jpg"
                   }
+                  description={movie.overview}
                   year={movie.release_date ? movie.release_date.split("-")[0] : "N/A"}
-                  genre={Array.isArray(movie.genre_names) ? movie.genre_names : []}
+                  tmdbRating={movie.vote_average}
                 />
-              </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </>
       )}
 

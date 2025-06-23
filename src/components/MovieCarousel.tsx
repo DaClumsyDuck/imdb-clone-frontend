@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState } from "react";
 import MovieCard from "./MovieCard.tsx";
+import MovieListItem from "./MovieListItem.tsx";
 
 type Movie = {
   id: number;
@@ -13,9 +14,10 @@ type Movie = {
 
 type Props = {
   movies: Movie[];
+  viewMode?: "grid" | "list";
 };
 
-const MovieCarousel: React.FC<Props> = ({ movies }) => {
+const MovieCarousel: React.FC<Props> = ({ movies, viewMode = "grid" }) => {
   const [startIndex, setStartIndex] = useState(0);
   const visibleMovies = 4;
 
@@ -31,6 +33,26 @@ const MovieCarousel: React.FC<Props> = ({ movies }) => {
     );
   };
 
+  // List view mode
+  if (viewMode === "list") {
+    return (
+      <div className="flex flex-col gap-2">
+        {movies.map((movie) => (
+          <MovieListItem
+            key={movie.id}
+            movieId={movie.id}
+            title={movie.title}
+            image={movie.image}
+            description={""}
+            year={movie.year.toString()}
+            tmdbRating={movie.rating}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // Carousel view (default)
   return (
     <div className="relative group">
       <div className="overflow-hidden">
@@ -49,7 +71,7 @@ const MovieCarousel: React.FC<Props> = ({ movies }) => {
                 movieId={movie.id}
                 title={movie.title}
                 image={movie.image}
-                year={movie.year?.toString()}
+                year={movie.year.toString()}
                 genre={movie.genre}
                 tmdbRating={movie.rating}
               />

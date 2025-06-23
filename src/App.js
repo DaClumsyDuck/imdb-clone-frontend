@@ -21,6 +21,7 @@ import { WatchlistProvider, useWatchlist } from "./context/WatchListContext.tsx"
 import WatchlistPage from "./Pages/WatchListPage.tsx";
 import { RatingProvider } from "./context/RatingContext.tsx";
 import { ToastContainer } from 'react-toastify';
+import { ViewModeProvider } from "./context/ViewModeContext.tsx";
 
 
 function App() {
@@ -45,45 +46,47 @@ function App() {
       }
     });
 
-    return () => unsubscribe(); // Clean up on unmount
+    return () => unsubscribe();
   }, []);
 
   return (
     <AuthProvider>
-      <WatchlistProvider>
-        <RatingProvider>
-          <BrowserRouter>
-            <div className="min-h-screen bg-black text-white">
-              <Navbar
-                onProfileClick={openLoginModal}
-                onSignUpClick={openSignUpModal}
-              />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/movies" element={<MovieList />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/searchresults" element={<SearchResultsPage />} />
-                <Route path="/movie/:id" element={<MovieDetails />} />
-                <Route path="/actor/:id" element={<ActorDetails />} />
-                <Route path="/favorite-actors" element={<FavoriteActorsPage />} />
-                <Route path="/top-rated" element={<Toprated />} />
-                <Route path="/tv/:id" element={<TVShowDetails />} />
-                <Route path="/coming-soon" element={<ComingSoonPage />} />
-                <Route path="/watchlist" element={<WatchlistPage />} />
-              </Routes>
-              <LoginModal
-                isOpen={isLoginModalOpen}
-                onClose={closeLoginModal}
-                onSignUpClick={openSignUpModal}
-              />
-              <SignUpModal
-                isOpen={isSignUpModalOpen}
-                onClose={closeSignUpModal}
-              />
-            </div>
-          </BrowserRouter>
-        </RatingProvider>
-      </WatchlistProvider>
+      <ViewModeProvider>
+        <WatchlistProvider>
+          <RatingProvider>
+            <BrowserRouter>
+              <div className="min-h-screen bg-black text-white">
+                <Navbar
+                  onProfileClick={openLoginModal}
+                  onSignUpClick={openSignUpModal}
+                />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/movies" element={<MovieList />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/searchresults" element={<SearchResultsPage />} />
+                  <Route path="/movie/:id" element={<MovieDetails />} />
+                  <Route path="/actor/:id" element={<ActorDetails />} />
+                  <Route path="/favorite-actors" element={<FavoriteActorsPage />} />
+                  <Route path="/top-rated" element={<Toprated />} />
+                  <Route path="/tv/:id" element={<TVShowDetails />} />
+                  <Route path="/coming-soon" element={<ComingSoonPage />} />
+                  <Route path="/watchlist" element={<WatchlistPage />} />
+                </Routes>
+                <LoginModal
+                  isOpen={isLoginModalOpen}
+                  onClose={closeLoginModal}
+                  onSignUpClick={openSignUpModal}
+                />
+                <SignUpModal
+                  isOpen={isSignUpModalOpen}
+                  onClose={closeSignUpModal}
+                />
+              </div>
+            </BrowserRouter>
+          </RatingProvider>
+        </WatchlistProvider>
+      </ViewModeProvider>
     </AuthProvider>
   );
 }

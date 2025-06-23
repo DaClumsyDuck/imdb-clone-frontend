@@ -6,6 +6,8 @@ import SearchBar from "./SearchBar.tsx";
 import FilterPanel from "./FilterPanel.tsx";
 import { useTheme } from "../context/ThemeContext.tsx";
 import { FaSun, FaMoon } from "react-icons/fa";
+import ViewToggle from "../components/ViewToggle.tsx";
+import { useViewMode } from "../context/ViewModeContext.tsx";
 
 interface NavbarProps {
   onProfileClick: () => void;
@@ -33,6 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ onProfileClick }) => {
   const [genre, setGenre] = useState<string[]>([]);
   const [actor, setActor] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
+  const { viewMode, toggleViewMode } = useViewMode();
 
   const handleProfileClick = () => {
     if (user) {
@@ -119,8 +122,7 @@ const Navbar: React.FC<NavbarProps> = ({ onProfileClick }) => {
           >
             Profile
           </button>
-          {/* Theme Toggle Button */}
-          <ThemeToggle />
+          <ViewToggle view={viewMode} onToggle={toggleViewMode} />
         </div>
       </div>
     </nav>
